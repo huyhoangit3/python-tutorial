@@ -31,6 +31,7 @@ ax.add_artist(Drawing_uncolored_circle1)
 for i, txt in enumerate(labels):
     ax.annotate(txt, (xpoint[i], ypoint[i]))
 
+plt.plot(xpoint, ypoint, "o")
 plt.plot(xpoint, ypoint)
 plt.xlim([0, 100])
 plt.ylim([0, 100])
