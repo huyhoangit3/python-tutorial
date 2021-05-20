@@ -1,5 +1,6 @@
 from Point import Point
 from collections import OrderedDict
+import math
 
 
 class Sensor:
@@ -7,17 +8,17 @@ class Sensor:
         # số thứ tự của sensor
         self.index = -1
         # bán kính của sensor
-        self.radius = 10
+        self.radius = 0
         # tọa độ Oxy của sensor
         self.coordinate = Point()
         # danh sách các sensor gần nó và khoảng cách giữa chúng
-        self.nearSensors = OrderedDict()
+        self.near_sensors = OrderedDict()
         # trạng thái duyệt của sensor
-        self.isVisited = False
+        self.is_visited = False
         # danh sách các đường đi và chi phí của nó
-        self.pathToSinkSensor = OrderedDict()
+        self.path_to_sinksensor = OrderedDict()
         # đường đi ngắn nhất từ sink sensor đến mỗi sensor
-        self.shortestPath = list()
+        self.shortest_path = list()
 
     # override equal method
     def __eq__(self, other):
@@ -26,3 +27,8 @@ class Sensor:
     # make Sensor object hashable
     def __hash__(self):
         return hash((self.index,self.coordinate))
+    # 
+    def distance_to_sensor(self, other):
+        return math.sqrt(pow(self.coordinate.x - other.coordinate.x, 2) +
+                                       pow(self.coordinate.y - other.coordinate.y, 2))
+

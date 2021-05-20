@@ -6,38 +6,40 @@ from matplotlib.colors import Normalize
 
 if __name__ == "__main__":
     # fill color in Circle
-    cmap = cm.jet  # Select colormap U want
+    cmap = cm.jet   # Select colormap U want
     # Declare for set range of value for normalization
-    vmin = 0
+    vmin = 0        
     vmax = 1
     # Normalize value for cmap
     norm = Normalize(vmin, vmax)
 
-    program = Program()
+    # số lượng sensor
+    n = 20
+    program = Program(n)
 
-    # in ra các sensor đã random
-    print("CAC SENSOR DA RANDOM LA: ")
-    program.printSensors(program.sensorList)
-    print("**************************************")
+    # # in ra các sensor đã random
+    # print("CAC SENSOR DA RANDOM LA: ")
+    # program.printSensors(program.sensorList)
+    # print("**************************************")
 
-    # in ra các sensor có thể giao tiếp với sensor trung tâm
-    print("CAC SENSOR CO THE GIAO TIEP VOI SENSOR TRUNG TAM")
-    if len(program.sinkSensor.nearSensors) != 0:
-        program.printSensors(program.sinkSensor.nearSensors.keys())
-    print("======================================")
+    # # in ra các sensor có thể giao tiếp với sensor trung tâm
+    # print("CAC SENSOR CO THE GIAO TIEP VOI SENSOR TRUNG TAM")
+    # if len(program.sinkSensor.nearSensors) != 0:
+    #     program.printSensors(program.sinkSensor.nearSensors.keys())
+    # print("======================================")
 
-    ##########################
-    print("CAC SENSOR VA DS SENSOR CO THE GIAO TIEP VOI NO")
-    for sensor in program.sensorList:
-        print(f"STT: {sensor.index}\t(X,Y) = ({sensor.coordinate.x}, {sensor.coordinate.y})")
-        if len(sensor.nearSensors) != 0:
-            program.printSensors(sensor.nearSensors)
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    # ##########################
+    # print("CAC SENSOR VA DS SENSOR CO THE GIAO TIEP VOI NO")
+    # for sensor in program.sensorList:
+    #     print(f"STT: {sensor.index}\t(X,Y) = ({sensor.coordinate.x}, {sensor.coordinate.y})")
+    #     if len(sensor.nearSensors) != 0:
+    #         program.printSensors(sensor.nearSensors)
+    # print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     for sensor in program.sensorList:
         if len(sensor.pathToSinkSensor) != 0:
             program.findShortestPath(sensor)
-
+    
     for sensor in program.sensorList:
         program.printAllPathAvailable(sensor)
     ###########################
@@ -59,8 +61,8 @@ if __name__ == "__main__":
     labels = list()
 
     # vẽ sink sensor
-    drawing_sink_sensor = plt.Circle((program.sinkSensor.coordinate.x,
-                                      program.sinkSensor.coordinate.y), sensor.radius, color=cmap(norm(0.7)))
+    drawing_sink_sensor = plt.Circle((program.sinkSensor.coordinate.x, 
+        program.sinkSensor.coordinate.y), sensor.radius, color=cmap(norm(0.7)))
     # vẽ danh sách các sensor
     drawing_circle_list = list()
     # duyệt lần lượt sensorList
@@ -68,13 +70,11 @@ if __name__ == "__main__":
         # nếu sensor có đường đi tới sink sensor
         # thì set màu cho sensor đó
         if sensor in colored_sensor:
-            drawing_circle = plt.Circle((sensor.coordinate.x, sensor.coordinate.y), sensor.radius,
-                                        color=cmap(norm(0.5)))
+            drawing_circle = plt.Circle((sensor.coordinate.x, sensor.coordinate.y), sensor.radius, color=cmap(norm(0.5)))
         # ngược lại màu mặc định
         else:
-            drawing_circle = plt.Circle((sensor.coordinate.x, sensor.coordinate.y), sensor.radius,
-                                        color=cmap(norm(0.3)))
-
+            drawing_circle = plt.Circle((sensor.coordinate.x, sensor.coordinate.y), sensor.radius, color=cmap(norm(0.3)))
+        
         drawing_circle_list.append(drawing_circle)
 
         x_values.append(sensor.coordinate.x)
@@ -93,6 +93,7 @@ if __name__ == "__main__":
     axes.scatter(x_points, y_points)
     axes.set_aspect(1)
 
+    
     for i in drawing_circle_list:
         # vẽ danh sách các sensor đã random
         axes.add_artist(i)
@@ -111,6 +112,10 @@ if __name__ == "__main__":
     plt.ylim([0, 100])
     plt.show()
 
+    
+    
+    
+    
     # print("CAC SENSOR VA DS SENSOR CO THE GIAO TIEP VOI NO")
     # for sensor in program.sensorList:
     #     print(f"STT: {sensor.index}\t(X,Y) = ({sensor.coordinate.x}, {sensor.coordinate.y})")
@@ -121,6 +126,6 @@ if __name__ == "__main__":
     # for sensor in program.sensorList:
     #     if len(sensor.pathToSinkSensor) != 0:
     #         program.findShortestPath(sensor.pathToSinkSensor)
-
+    
     # for sensor in program.sensorList:
     #     program.printAllPathAvailable(sensor)

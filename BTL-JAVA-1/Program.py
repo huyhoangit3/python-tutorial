@@ -6,8 +6,9 @@ import sys
 
 class Program:
     # hàm tạo
-    def __init__(self):
+    def __init__(self, n):
         # số lượng sensor
+        self.quantity = n
         # danh sách sensor
         self.sensorList = list()
         # khởi tạo sink sensor
@@ -16,9 +17,7 @@ class Program:
         self.sinkSensor.coordinate.y = 50
 
         # random các sensor
-        # self.randSensors()
-
-        self.readFile()
+        self.randSensors()
 
         # load dữ liệu cho từng sensor và sensor trung tâm
         self.loadData()
@@ -29,21 +28,43 @@ class Program:
         while pos <= self.quantity:
             # khởi tạo 1 sensor
             sensor = Sensor()
-            # random tọa độ  x và y
-            x = random.randint(0, 100)
-            y = random.randint(0, 100)
-            # gán số thứ tự cho mỗi sensor
-            sensor.index = pos
-            # gán tọa độ cho mỗi sensor
-            sensor.coordinate.x = x
-            sensor.coordinate.y = y
+            while True:
+                flag = False
+                # random tọa độ  x và y
+                x = random.randint(0, 100)
+                y = random.randint(0, 100)
+                # gán số thứ tự cho mỗi sensor
+                sensor.index = pos
+                # gán tọa độ cho mỗi sensor
+                sensor.coordinate.x = x
+                sensor.coordinate.y = y
 
-            # nếu sensor không trùng với bất kì sensor nào trong sensorList và 
-            # không trùng với sink sensor
-            if sensor not in self.sensorList and x != self.sinkSensor.coordinate.x \
-                    and y != self.sinkSensor.coordinate.y:
-                self.sensorList.append(sensor)
-                pos += 1
+                length = 0
+                # đảm bảo các sensor có thể kết nối với nhau
+                # duyệt lần lượt từng sensor trong sensorList
+                if(len(self.sensorList) == 0):
+                    length = math.sqrt(pow(sensor.coordinate.x - self.sinkSensor.coordinate.x, 2) +
+                                       pow(sensor.coordinate.y - self.sinkSensor.coordinate.y, 2))
+                    if sensor != self.sinkSensor and length <= 2 * sensor.radius:
+                        flag = True
+
+
+                
+                for i in range(len(self.sensorList)):
+                    # lấy ra từng sensor
+                    source = self.sensorList[i]
+                    # tính khoảng cách giữa 2 sensor
+                    length = math.sqrt(pow(sensor.coordinate.x - source.coordinate.x, 2) +
+                                       pow(sensor.coordinate.y - source.coordinate.y, 2))
+                    # thêm vào danh sách các sensor ở gần nếu khoảng cách <= 2 * radius
+                    if sensor not in self.sensorList and x != 50 and y != 50 and length <= 2 * sensor.radius:
+                        flag = True
+                        break
+                if flag == True:
+                    break
+
+            self.sensorList.append(sensor)
+            pos += 1    
 
 
     # hàm load data cho từng sensor
@@ -51,37 +72,21 @@ class Program:
         # tìm danh sách các sensor gần sensor trung tâm
         self.findNearSensor(self.sinkSensor)
         
-        for i in range(len(self.sensorList)):
+        for i in range(self.quantity):
             # tìm danh sách các sensor gần mỗi sensor 
             self.findNearSensor(self.sensorList[i]) 
 
-        for i in range(len(self.sensorList)):
+        for i in range(self.quantity):
             # tìm danh sách đường đi tới sink sensor và chi phí của chúng nếu có
             self.findPaths(self.sinkSensor, self.sensorList[i])
             # tìm đường đi ngắn nhất từ sink sensor đến mỗi sensor (nếu có)
             self.findShortestPath(self.sensorList[i])
         
-    # hàm đọc file
-    def readFile(self):
-        file = open('/home/hoang/datasets/data2.txt', 'r')
-        while True:
-            line = file.readline()
-            if not line:
-                break
-            line = line.rstrip('\n')
-            result = line.split(',')
-            result = [int(x) for x in result]
-            sensor = Sensor()
-            sensor.index = result[2]
-            sensor.coordinate.x = result[0]
-            sensor.coordinate.y = result[1]
-            self.sensorList.append(sensor)
-        file.close()
 
     # phương thức tìm danh sách các sensor ở gần mỗi sensor
     def findNearSensor(self, source):
         # duyệt lần lượt từng sensor trong sensorList
-        for i in range(len(self.sensorList)):
+        for i in range(self.quantity):
             # lấy ra từng sensor
             sensor = self.sensorList[i]
             # tính khoảng cách giữa 2 sensor
